@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Django Model Explorer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title">
+          Django Model Explorer
+        </h1>
+        <div id="vued">
+            <input v-model="q" type="search" name="q" value="" autocomplete="off" placeholder="search by keyword">
+            <span>{{models_filtered_count}}</span>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Model</th>
+                        <th>Parents</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="m in models_filtered">
+                        <td>
+                            {{ m.project }}/{{ m.path }}
+                        </td>
+                        <td>
+                            <a :href="m.html_url+'#L'+m.line">{{ m.name }}</a>
+                        </td>
+                        <td>{{ parents_list(m) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </section>
+    <script>
+      window.models = {{ models }};
+
+        var app = new Vue({
+            el: '#vued',
+            data: {
+                models: window.models,
+                q: '',
+            },
+            computed: {
+                models_filtered: function() {
+                    var self = this;
+                    return this.models.filter(function(m) {
+                        var ret = true;
+                        var str = [m.name, m.project, m.path, m.parents.join(', ')].join(' ').toLowerCase();
+                        ret = str.indexOf(self.q) > -1
+                        return ret;
+                    });
+                },
+                models_filtered_count: function () {
+                    return this.models_filtered.length;
+                }
+            },
+            methods: {
+                parents_list: function(m) {
+                    return m.parents.join(', ');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
