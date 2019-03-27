@@ -1,7 +1,7 @@
 ## Features
 
 * create a local database of django models found across several github repositories
-* web page to browse and search those models with link to github source code
+* web page to browse and search those models with direct link to github source code
 
 ![screenshot](https://raw.githubusercontent.com/kingsdigitallab/gitan/master/doc/django-model-explorer.png)
 
